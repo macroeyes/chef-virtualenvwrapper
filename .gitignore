@@ -1,0 +1,46 @@
+# Common Files
+.DS_Store
+.project
+.pydevproject
+.settings
+.coverage
+.vagrant*
+*.pyc
+rcfile.*
+!*.example
+*.pid
+*.log
+*#*
+*~*
+nosetests.xml
+build/
+dist/
+docs/_build
+*.backup*
+
+# Project Files
+*.iml
+.idea/
+atlassian-ide-plugin.xml
+
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+pkg/
+
+# Berkshelf
+.vagrant
+/cookbooks
+Berksfile.lock
+
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
+!.bundle/config
+
+.kitchen/
+.kitchen.local.yml

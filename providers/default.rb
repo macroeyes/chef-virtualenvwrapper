@@ -17,74 +17,72 @@
 # limitations under the License.
 
 action :create do
-  bash "create_virtualenv" do
-    user new_resource.owner if new_resource.owner
-    group new_resource.group if new_resource.group
-    action :run
-    code <<-EOH
-      source #{node[:virtualenvwrapper][:script]} && \
-        mkvirtualenv #{new_resource.name}
-    EOH
-    environment(get_environment)
-    creates virtualenv_path
-  end
+    bash "create_virtualenv" do
+        user new_resource.owner if new_resource.owner
+        group new_resource.group if new_resource.group
+        action :run
+        code <<-EOH
+source #{node[:virtualenvwrapper][:script]} && mkvirtualenv #{new_resource.name}
+        EOH
+        environment(get_environment)
+        creates virtualenv_path
+    end
 end
 
 action :destroy do
-  directory virtualenv_path do
-    recursive true
-    action :delete
-  end
+    directory virtualenv_path do
+        recursive true
+        action :delete
+    end
 end
 
 action :install do
-  if new_resource.requirements
-    Chef::Log.info("Installing from requirements file")
-    install_from_file
-  elsif new_resource.packages
-    Chef::Log.info("Installing from packages")
-    install_from_packages
-  else
-    Chef::Log.debug("No requirements or packages found")
-  end
+    if new_resource.requirements
+        Chef::Log.info("Installing from requirements file: #{new_resource.requirements}")
+        install_from_file
+    elsif new_resource.packages
+        Chef::Log.info("Installing from packages: #{new_resource.packages}")
+        install_from_packages
+    else
+        Chef::Log.debug("No requirements or packages found")
+    end
 end
 
 def install_from_file
-  pip_cmd = ::File.join(node['virtualenvwrapper']['workon_home'],
-                        new_resource.name, "bin", "pip")
-  execute "#{pip_cmd} install -r #{new_resource.requirements}" do
-    user new_resource.owner if new_resource.owner
-    group new_resource.group if new_resource.group
-    environment(get_environment)
-    action :run
-  end
+    pip_cmd = ::File.join(node[:virtualenvwrapper][:workon_home], new_resource.name, 'bin', 'pip')
+    execute "#{pip_cmd} install -r #{new_resource.requirements}" do
+        user new_resource.owner if new_resource.owner
+        group new_resource.group if new_resource.group
+        environment(get_environment)
+        action :run
+    end
 end
 
 def install_from_packages
-  new_resource.packages.each do |name, ver|
-    python_pip name do
-      version ver if ver && ver.length > 0
-      virtualenv virtualenv_path
-      action :install
+    new_resource.packages.each do |name, ver|
+        python_pip name do
+            version ver if ver && ver.length > 0
+            virtualenv virtualenv_path
+            action :install
+        end
     end
-  end
 end
 
 def virtualenv_path
-  ::File.join(node['virtualenvwrapper']['workon_home'], new_resource.name)
+  ::File.join(node[:virtualenvwrapper][:workon_home], new_resource.name)
 end
 
 def get_environment
     if new_resource.environment and new_resource.environment.is_a?(Hash)
         resource_env = new_resource.environment.merge({
-            'WORKON_HOME' => node['virtualenvwrapper']['workon_home'],
+            'WORKON_HOME' => node[:virtualenvwrapper][:workon_home],
             'HOME' => (::Dir.home(new_resource.owner) if new_resource.owner)
         })
     else
         resource_env = {
-            'WORKON_HOME' => node['virtualenvwrapper']['workon_home'],
+            'WORKON_HOME' => node[:virtualenvwrapper][:workon_home],
             'HOME' => (::Dir.home(new_resource.owner) if new_resource.owner)
         }
     end
-    return  resource_env
+    resource_env
 end

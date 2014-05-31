@@ -17,8 +17,10 @@
 # limitations under the License.
 #
 
-default['virtualenvwrapper']['workon_home'] = "/var/www/envs"
-default['virtualenvwrapper']['user'] = "www-data"
-default['virtualenvwrapper']['group'] = "www-data"
-default['virtualenvwrapper']['profile'] = "/home/www-data/.profile"
-default['virtualenvwrapper']['script'] = "/usr/local/bin/virtualenvwrapper.sh"
+default[:virtualenvwrapper][:user] = 'vagrant'
+default[:virtualenvwrapper][:group] = 'vagrant'
+default[:virtualenvwrapper][:home] = node[:virtualenvwrapper][:user] == 'root' ? "/#{node[:virtualenvwrapper][:user]}" : "/home/#{node[:virtualenvwrapper][:user]}"
+default[:virtualenvwrapper][:profile] = '/etc/bash.bashrc'
+
+default[:virtualenvwrapper][:workon_home] = "#{node[:virtualenvwrapper][:home]}/.virtualenvs"
+default[:virtualenvwrapper][:script] = '/usr/local/bin/virtualenvwrapper.sh'

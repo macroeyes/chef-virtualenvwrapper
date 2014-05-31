@@ -1,10 +1,15 @@
 name             "virtualenvwrapper"
 maintainer       "Alex Kestner"
 maintainer_email "akestner@macroeyes.com"
-license          "Apache 2.0"
-description      "Installs/Configures virtualenvwrapper"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+license          "MIT"
+description      "Installs/Configures virtualenvwrapper LWRP"
+long_description IO.read(File.join(File.dirname(__FILE__), 'ReadMe.md'))
 version          "0.1.1"
 
-supports "ubuntu"
-depends "python"
+%w{ ubuntu }.each do |os|
+    supports os
+end
+
+%w{ python }.each do |dep|
+    depends dep
+end
