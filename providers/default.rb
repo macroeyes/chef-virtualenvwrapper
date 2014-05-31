@@ -76,14 +76,15 @@ end
 
 def get_environment
     if new_resource.environment and new_resource.environment.is_a?(Hash)
-        new_resource.environment.merge!({
+        resource_env = new_resource.environment.merge({
             'WORKON_HOME' => node['virtualenvwrapper']['workon_home'],
             'HOME' => (::Dir.home(new_resource.owner) if new_resource.owner)
         })
     else
-        {
+        resource_env = {
             'WORKON_HOME' => node['virtualenvwrapper']['workon_home'],
             'HOME' => (::Dir.home(new_resource.owner) if new_resource.owner)
         }
     end
+    return  resource_env
 end
