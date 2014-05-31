@@ -1,12 +1,3 @@
-Description
-===========
-
-Requirements
-============
-
-Attributes
-==========
-
-Usage
-=====
-
+chef-virtualenvwrapper
+===
+TODO: write proper README.md
